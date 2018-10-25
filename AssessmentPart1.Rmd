@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+---------------------------------------------------------------
+
+#Comparing two maps in GUI and code-based environments
+
+
+The first idea came from comparing two spatial datasets using the EUROSTAT portal (https://ec.europa.eu/eurostat/) more specific, the GISCO portal (Geographic Information System of the COmmission - localise, analyse, visualise). Different geodata can de consulted on the web-site, most notably for this study, was interesting to produce two maps: one regarding the urbanisation degree in EU and another estimating the functional areas.
+
+
+The first map is produced using the QGIS GUI based-approach with data from DEGURBA web-site (https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/population-distribution-demography/degurba). The degree of urbanistation is a classification based on 2011 EU population and local administration units level 2(LAU2) as of 2014. According to the methodology chose by authors, population size and density are classsified in terms of densely populated areas, intermediate density areas and thinly-populated areas.  (https://ec.europa.eu/eurostat/statistics-explained/index.php/Degree_of_urbanisation_classification_-_2011_revision#Degree_of_urbanisation_classification) 
+The most recent update relates to the 2014 "DGURBA_2014_SH.zip" file, once downloaded and unzipped,the shapefiles data are provided in polygons (DGURBA_RG_01M_2014) and points (DGURBA_PT_2014). 
+A new project named "Urbanisation.qgis" has been saved into the local folder and after setting the coordinates reference system through the "Project Properties>CRS>WGS 84/Pseudo Mercator - ESPG:3857" which is the most familiar in representations, also used extensively by Google, both the shapefiles are then added as vector layers into the project. 
+
+In order to better understand the 
+
+
+
+In order to 
+both have as   interesting geodata are located in the DEGURBA (Degree of urbanisation) database. 
+
+Bearing in mind that the downloaded data from Degurba stands under copyright notice, data source will also apear in the legend of the map and to introductory page of the asssessment, in the following format:
+"© EuroGeographics for the administrative boundaries".
+
+
+
+
+
+
+
+
+
+
