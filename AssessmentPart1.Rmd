@@ -8,26 +8,51 @@ output: html_notebook
 
 #Comparing two maps in GUI and code-based environments
 
+##Vizualising DEGURBA data in QGIS
+The first idea came from comparing two spatial datasets using the EUROSTAT portal (https://ec.europa.eu/eurostat/) more specific, the GISCO service (Geographic Information System of the COmmission - localise, analyse, visualise). Different geodata can be consulted on the web-site, most notably for this study, was interesting to produce two maps: one regarding the urbanisation degree in EU and another estimating the functional areas.
+Also very important is to carefully choose the sources for our data, in case we want to join table and shapefiles, it is a long process to find then the right matching fields.
 
-The first idea came from comparing two spatial datasets using the EUROSTAT portal (https://ec.europa.eu/eurostat/) more specific, the GISCO portal (Geographic Information System of the COmmission - localise, analyse, visualise). Different geodata can de consulted on the web-site, most notably for this study, was interesting to produce two maps: one regarding the urbanisation degree in EU and another estimating the functional areas.
+The first map is produced using the QGIS GUI based-approach with a shapefile created by DEGURBA project that presents the degree of urbanisation based on 2011 EU population and local administration units level 2 (LAU2) as of 2014.  According to the methodology chose by authors, notably the EU DG Agri and DG Regio,in order to develop this classification, the population size and density are classsified in three cathegorie: densely populated areas, intermediate density areas and thinly-populated areas.  (https://ec.europa.eu/eurostat/statistics-explained/index.php/Degree_of_urbanisation_classification_-_2011_revision#Degree_of_urbanisation_classification.
+The most recent update relates to the 2014 "DGURBA_2014_SH.zip" file, once downloaded and unzipped,the shapefiles data are provided in polygons (DGURBA_RG_01M_2014) and points (DGURBA_PT_2014).
+Subsequently  the excel document "LAU2_REFERENCE_DATES_POPL" has been  added to the overall procedure, it represents the total population of the LAU2 in decades betweeen 1961 to 2011, usefull for a later compararison. The excel data ca be downloaded at the following link:https://ec.europa.eu/eurostat/web/nuts/local-administrative-units. 
+In QGIS a new project named "Urbanisation.qgis" has been saved into the local folder and after setting the coordinates reference system through the "Project Properties>CRS>WGS 84/Pseudo Mercator - ESPG:3857" which is the most familiar in representations, also used extensively by Google and Open Street Map (need citation). Both the shapefiles are added as vector layers into the project and reffered with layer>properties>general>Coordinate reference system EPSG:4258, ETRS89 as speficied on the dataset web-link. 
+
+#image of the web page
+
+In order to better understand the data representation, some adjustments to the visualization were neccessary: from selecting the layer>properties>style the symbology was fixed as categorized in 3 different colors indicating with red a bigger density and with green a lower one.
+Since the overall vizualisation contains only the data from the DGURBA_RG_01M_2014 shapefile, to enrich the representation, it is neccessary to "join"" it with the over mentioned excel table with layer properties>joins and matching the both fields in LAU_CODE. Now the shapefile cointains also the ecell file data an some other interesting categorization can be done.
 
 
-The first map is produced using the QGIS GUI based-approach with data from DEGURBA web-site (https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/population-distribution-demography/degurba). The degree of urbanistation is a classification based on 2011 EU population and local administration units level 2(LAU2) as of 2014. According to the methodology chose by authors, population size and density are classsified in terms of densely populated areas, intermediate density areas and thinly-populated areas.  (https://ec.europa.eu/eurostat/statistics-explained/index.php/Degree_of_urbanisation_classification_-_2011_revision#Degree_of_urbanisation_classification) 
-The most recent update relates to the 2014 "DGURBA_2014_SH.zip" file, once downloaded and unzipped,the shapefiles data are provided in polygons (DGURBA_RG_01M_2014) and points (DGURBA_PT_2014). 
-A new project named "Urbanisation.qgis" has been saved into the local folder and after setting the coordinates reference system through the "Project Properties>CRS>WGS 84/Pseudo Mercator - ESPG:3857" which is the most familiar in representations, also used extensively by Google, both the shapefiles were added as vector layers into the project. 
 
 
 
-In order to better understand the 
+ 
 
 
-
-In order to 
-both have as   interesting geodata are located in the DEGURBA (Degree of urbanisation) database. 
-
-Bearing in mind that the downloaded data from Degurba stands under copyright notice, data source will also apear in the legend of the map and to introductory page of the asssessment, in the following format:
+As final step, the composition was edited with "New Print Composer"
+which give a wide range of options in term of formatting.
+Bearing in mind that the downloaded features from DEGURBA stand under copyright notice, data source will also apear in the legend of the map and to introductory page of the asssessment, in the following format:
 "© EuroGeographics for the administrative boundaries".
 
+-----------------------------------------------
+
+
+
+##Creating EU functional areas with R language
+
+The second map uses data from the Urban Audit studies called "Functional Urban Area 2015-2018" and a table has been added also :https://ec.europa.eu/eurostat/data/database.
+
+##
+```{r}
+
+install.packages("tidyverse")
+library(tidyverse)
+
+EuropeanForeign <- read.csv("urb_audit_EU_foreigner.csv")
+EUForeign <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\FUA_RG_100K_2015_2018\\urb_audit_EU_foreigner.csv", header=TRUE, sep = ",")
+
+class(EUForeign)
+```
 
 
 
