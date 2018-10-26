@@ -10,22 +10,73 @@ output: html_notebook
 #Comparing two maps in GUI and code-based environments
 
 
-The idea behind these studies comes to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in comparing the street crimes and the Underground Stations location, the second takes into consideration the evolution of crimes in the London area in terms of trends from 2015 to 2018. 
-For this purpose the “Police.uk” web-site provides a large quantity of data in CSV format, comprising also x and y coordinates . Particularly in this case, the London Metropolitan Police service was used to download the csv file which is released monthly from September 2015 to August 2018. According to the methodology chose by authors, the file describes “individual crime and anti-social behaviour (ASB) incidents, including street-level location information and subsequent police and court”. (https://data.police.uk/about/#columns). Along with the Police data, other Open Street Map shapefiles were downloaded from the Open Street Map (OSM) related Geofabrik website (https://download.geofabrik.de/) as of 1st October 2018 and used as cartographic base for the overall process.
+The idea behind these studies comes to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in comparing the street crimes and the Underground Stations location, the second takes into consideration the difference of street-crimes in two different months in London. 
+
+For this purpose the “Police.uk” web-site provides a large quantity of data in CSV format with x,y coordinates . Particularly in this case, the London Metropolitan Police service was used to download the csv file which is released monthly from September 2015 to August 2018. According to the methodology chose by authors, the file describes “individual crime and anti-social behaviour (ASB) incidents, including street-level location information and subsequent police and court”(https://data.police.uk/about/#columns). Along with the Police data, other Open Street Map shapefiles were downloaded from the related Geofabrik website (https://download.geofabrik.de/) as of 1st October 2018 and used as cartographic base for the overall process.
 
 
 ##Visualizing The London Metropolitan Police street-crimes data compared to the Underground Stations location as August 2018. 
 
 
-The first map is produced using the QGIS GUI based-approach adding different OSM shapefiles of the London area. After importing the Metropolitan Police cvs table and transforming it into points layer(point_crime),  a brand new table has been created through the distance matrix analysis (Vector>Analysis Tools>Distance Matrix). 
+The first map is produced using the QGIS GUI based-approach adding different OSM shapefiles within the London area. After importing the Metropolitan Police cvs table and transforming it into points layer (point_crime),  a brand new table has been created through the distance matrix analysis (Vector>Analysis Tools>Distance Matrix). 
 The new “Distance matrix.csv” then has been joined with the previous “point_crime.shp” file with properties>joins. This passage was required in order to create the hub line analysis (downloading the MMQGIS plug-in). 
-The maps shows the connections that London stations have due their proximity to crime records, according to the equation previously used during the matrix creation. 
+The maps shows the connections that London stations have due their proximity to crime records, according to the Linear(N*k x 3) previously used during the matrix creation. 
+
+
+## Vizualising the street-crime rate between 2015-2018
+
+The second map is using ther code-based environment in RStudio and takes into consideration the Metropolitan Police street-crime records trend for the July-August 2018 period.
+
+inut the two csv files
+
+```{r}
+
+install.packages("tidyverse")
+library(tidyverse)
+
+SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-metropolitan-street.csv", header=TRUE, sep = ",")
 
 
 
+SC07_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-07\\2018-07-metropolitan-street.CSV", header=TRUE, sep = ",")
+
+names(SC08_18)
+names(SC07_18)
+class(SC08_18)
+class(SC07_18)
+
+plot(SC07_18$Location)
+library(plotly)
+
+plot_ly(SC07_18, x = ~Location, y=~LSOA.name, text =~SC07_18$'LSOA.name', type = "scatter", mode="markers")
 
 
 
+```
+
+
+##C onvert the two tables in shapefiles:
+```{r}
+
+library(sf)
+library(sp)
+library(rgdal)
+install.packages("raster")
+library(raster)
+
+streets_crime1 = st_as_sf(SC08_18, coords = c("Longitude", "Latitude"), crs="=+proj=utm +zone=18 +datum=WGS84 +units=m +no_defs")
+
+
+
+```
+ Insert the building shape files:
+ 
+```{r}
+
+
+
+```
+ 
 
 
 
