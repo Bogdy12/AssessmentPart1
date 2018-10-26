@@ -10,7 +10,7 @@ output: html_notebook
 #Comparing two maps in GUI and code-based environments
 
 
-The idea behind these studies comes to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in comparing the street crimes and the Underground Stations location, the second takes into consideration the difference of street-crimes in two different months in London. 
+The idea behind these studies comes to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in comparing the street crimes and the Underground Stations location, the second takes into consideration the difference of street-crimes in two different months in the City of London area. 
 
 For this purpose the “Police.uk” web-site provides a large quantity of data in CSV format with x,y coordinates . Particularly in this case, the London Metropolitan Police service was used to download the csv file which is released monthly from September 2015 to August 2018. According to the methodology chose by authors, the file describes “individual crime and anti-social behaviour (ASB) incidents, including street-level location information and subsequent police and court”(https://data.police.uk/about/#columns). Along with the Police data, other Open Street Map shapefiles were downloaded from the related Geofabrik website (https://download.geofabrik.de/) as of 1st October 2018 and used as cartographic base for the overall process.
 
@@ -25,9 +25,9 @@ The maps shows the connections that London stations have due their proximity to 
 
 ## Vizualising the street-crime rate between 2015-2018
 
-The second map is using ther code-based environment in RStudio and takes into consideration the Metropolitan Police street-crime records trend for the July-August 2018 period.
+The second map is using ther code-based environment in RStudio and takes into consideration the City of London police street-crime records trend for the July-August 2018 period.
 
-inut the two csv files
+Inserting the two csv files:
 
 ```{r}
 
@@ -72,10 +72,10 @@ plot(SC07_18$Location)
 ##taking the reference from: http://www.spatialreference.org/ref/epsg/32622/
  
 # convert the dataframes to  objects:
-SC07_18_sp <- st_as_sf(SC07_18, coords= c("Latitude", "Longitude"), crs= " +proj=utm +zone=22 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+SC07_18_sp <- st_as_sf(SC07_18, coords= c("Longitude", "Latitude"), crs= " +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
 
-SC08_18_sp <- st_as_sf(SC08_18, coords= c("Latitude", "Longitude"), crs= " +proj=utm +zone=22 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= " +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
 crs(SC07_18_sp)
 
@@ -100,10 +100,12 @@ st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\Assess
  
 ```{r}
 
-Points_Crime<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp",as.sf=TRUE)
+Points_Crime_08<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp",as.sf=TRUE)
+
 
 COL_buldings<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CLA_buildings.shp",as.sf=TRUE)
 
+qtm(Points_Crime_08)
 qtm(COL_buldings)
 ```
  
