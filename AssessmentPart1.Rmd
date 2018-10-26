@@ -31,20 +31,27 @@ inut the two csv files
 
 ```{r}
 
-install.packages("tidyverse")
+
 library(tidyverse)
 library(sf)
 library(sp)
-library(rgdal)
-install.packages("raster")
 library(raster)
+library(maptools)
+library(RColorBrewer)
+library(classInt)
+library(OpenStreetMap)
+library(rgeos)
+library(tmap)
+library(tmaptools)
+library(sf)
+library(rgdal)
+library(geojsonio)
+
+SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv", header=TRUE, sep = ",")
 
 
-SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-metropolitan-street.csv", header=TRUE, sep = ",")
 
-
-
-SC07_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-07\\2018-07-metropolitan-street.CSV", header=TRUE, sep = ",")
+SC07_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-07\\2018-07-city-of-london-street.csv", header=TRUE, sep = ",")
 
 names(SC08_18)
 names(SC07_18)
@@ -60,6 +67,7 @@ plot(SC07_18$Location)
 
 
 ##PLace the CRS to the 2 tables:
+
 ```{r}
 ##taking the reference from: http://www.spatialreference.org/ref/epsg/32622/
  
@@ -69,29 +77,36 @@ SC07_18_sp <- st_as_sf(SC07_18, coords= c("Latitude", "Longitude"), crs= " +proj
 
 SC08_18_sp <- st_as_sf(SC08_18, coords= c("Latitude", "Longitude"), crs= " +proj=utm +zone=22 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
+crs(SC07_18_sp)
+
 
 ```
 
 
-##C onvert the two tables in shapefiles:
+##Convert the two tables in shapefiles:
 ```{r}
 
-#PLot the obejcts:
-ggplot()+ geom_sf(data=SC07_18_sp)+ggtitle("Crime Locations")
+#EXport the obejcts as shapefiles:
+st_write(SC07_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes07_18.shp", driver="ESRI shapefile")
+
+st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp", driver="ESRI shapefile")
 
 
 ```
  
  
- Insert the building shape files:
+ 
+## Insert and reading the base shape files:
  
 ```{r}
 
+Points_Crime<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp",as.sf=TRUE)
 
+COL_buldings<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CLA_buildings.shp",as.sf=TRUE)
 
+qtm(COL_buldings)
 ```
  
-
 
 
 
