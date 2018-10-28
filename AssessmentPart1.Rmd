@@ -58,6 +58,7 @@ names(SC07_18)
 class(SC08_18)
 class(SC07_18)
 str(SC07_18)
+str(SC08_18)
 plot(SC07_18$Location)
 
 
@@ -78,7 +79,7 @@ SC07_18_sp <- st_as_sf(SC07_18, coords= c("Longitude", "Latitude"), crs= " +proj
 SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= " +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
 crs(SC07_18_sp)
-
+crs(SC08_18_sp)
 
 ```
 
@@ -107,6 +108,21 @@ COL_buldings<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\
 
 qtm(Points_Crime_08)
 qtm(COL_buldings)
+```
+
+
+##Rasterizing the two tables
+
+```{r}
+
+pts <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv")
+coordinates(pts) <- ~Longitude+Latitude
+rast <- raster(ncol=10, nrow=10)
+extent(rast) <- extent(pts)
+rasterize(pts, rast,fun = mean)
+pts
+
+
 ```
  
 
