@@ -79,7 +79,7 @@ crs(SC08_18_sp)
 ```
 
 
-##Convert the two tables in shapefiles:
+##Convert the csv in points shapefile:
 ```{r}
 
 #EXport the obejcts as shapefiles:
@@ -99,13 +99,17 @@ st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\Assess
 Points_Crime_08<-readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp")
 
 
-COL_buldings<- read_shape("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CLA_buildings.shp",as.sf=TRUE)
-
-qtm(Points_Crime_08)
-qtm(COL_buldings)
+COL_buldings<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CLA_buildings.shp")
 
 
-##Vizualising the two shapes:
+
+
+```
+
+
+##"Coloring the Crime"
+```{r}
+
 
 levels(Points_Crime_08$Crime.type)
 
@@ -118,9 +122,23 @@ pointPalette
 crimeTypeColor<-c("purple", "green", "red","orange")[Points_Crime_08$Crime.type]
 crimeTypeColor
 
+osm_base<- read_osm(COL_buldings, type="esri", zoom=NULL)
+qtm(osm_base)+
+  tm_shape(COL_buldings)+
+  tm_polygons("type")
+
+
 
 plot (Points_Crime_08, col=crimeTypeColor, main="Crime type\n City of London", lwd=pointWidth)
 
+plot(COL_buldings,
+     col="grey93",
+     borders="grey",
+     main="City of London")
+
+plot(Points_Crime_08,
+     col="red",
+     add=TRUE)
 
 
 
