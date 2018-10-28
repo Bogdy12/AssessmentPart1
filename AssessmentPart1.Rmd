@@ -50,16 +50,13 @@ library(geojsonio)
 SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv", header=TRUE, sep = ",")
 
 
-
-SC07_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-07\\2018-07-city-of-london-street.csv", header=TRUE, sep = ",")
-
 names(SC08_18)
-names(SC07_18)
+
 class(SC08_18)
-class(SC07_18)
-str(SC07_18)
+
+
 str(SC08_18)
-plot(SC07_18$Location)
+plot(SC08_18$Location)
 
 
 
@@ -73,12 +70,10 @@ plot(SC07_18$Location)
 ##taking the reference from: http://www.spatialreference.org/ref/epsg/32622/
  
 # convert the dataframes to  objects:
-SC07_18_sp <- st_as_sf(SC07_18, coords= c("Longitude", "Latitude"), crs= " +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
-
 
 SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= " +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
-crs(SC07_18_sp)
+
 crs(SC08_18_sp)
 
 ```
@@ -88,7 +83,7 @@ crs(SC08_18_sp)
 ```{r}
 
 #EXport the obejcts as shapefiles:
-st_write(SC07_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes07_18.shp", driver="ESRI shapefile")
+
 
 st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp", driver="ESRI shapefile")
 
