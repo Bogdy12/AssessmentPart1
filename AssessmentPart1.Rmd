@@ -46,13 +46,16 @@ library(tmaptools)
 library(sf)
 library(rgdal)
 library(geojsonio)
+library(ggplot2)
 
 SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv", header=TRUE, sep = ",")
 
 
 names(SC08_18)
 
+
 class(SC08_18)
+class(COL_buldings)
 
 
 str(SC08_18)
@@ -71,7 +74,8 @@ plot(SC08_18$Harm.Index)
  
 # convert the dataframes to  objects:
 
-SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= " +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84
++towgs84=0,0,0")
 
 
 crs(SC08_18_sp)
@@ -101,8 +105,8 @@ Points_Crime_08<-readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\A
 
 COL_buldings<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CLA_buildings.shp")
 
-
-
+crs(SC08_18_sp)
+crs(COL_buldings)
 
 ```
 
@@ -110,35 +114,35 @@ COL_buldings<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\Ass
 ##"Coloring the Crime"
 ```{r}
 
-
+print(Points_Crime)
+print(COL_buldings)
 levels(Points_Crime_08$Crime.type)
 
-pointWidth<-c(2,3,4,5,6,7,8)[Points_Crime_08$Harm.Index]
-pointWidth
-
-pointPalette<-c("purple", "green", "red", "orange")
-pointPalette
-
-crimeTypeColor<-c("purple", "green", "red","orange")[Points_Crime_08$Crime.type]
-crimeTypeColor
-
-osm_base<- read_osm(COL_buldings, type="esri", zoom=NULL)
+osm_base<- read_osm(Points_Crime_08, type="esri", zoom=NULL)
 qtm(osm_base)+
-  tm_shape(COL_buldings)+
-  tm_polygons("type")
+# tmap_mode("view")+
+  tm_shape (COL_buldings)+
+  tm_polygons("type")+
+  tm_shape(Points_Crime_08)+
+  tm_dots("Crime.type",
+          alpha=0.6,
+          shape = 5,
+          style="jenks",
+          palette="YlOrBr",
+          midpoint=NA,
+          title = "Crime harm index\n - City of London")
 
+##transforming into sf
+Points_Crime_08_sf<-st_as_sf(Points_Crime_08)
+COL_buldings_sf<-st_as_sf(COL_buldings)
 
+ggplot()+
+  geom_sf(data=COL_buldings_sf, fill="brown", color="brown")+
+  geom_sf(data=Points_Crime_08_sf,shape=10, color="red",
+          show.legend = "line", size=1)+
+  ggtitle("Coloring street-crime")+
+  coord_sf()
 
-plot (Points_Crime_08, col=crimeTypeColor, main="Crime type\n City of London", lwd=pointWidth)
-
-plot(COL_buldings,
-     col="grey93",
-     borders="grey",
-     main="City of London")
-
-plot(Points_Crime_08,
-     col="red",
-     add=TRUE)
 
 
 
