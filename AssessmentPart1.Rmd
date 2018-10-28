@@ -103,10 +103,10 @@ st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\Assess
 Points_Crime_08<-readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp")
 
 
-COL_buldings<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CLA_buildings.shp")
+CoL_area<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CoL_area.shp")
 
 crs(SC08_18_sp)
-crs(COL_buldings)
+crs(CoL_area)
 
 ```
 
@@ -115,54 +115,52 @@ crs(COL_buldings)
 ```{r}
 
 print(Points_Crime)
-print(COL_buldings)
+print(CoL_area)
 levels(Points_Crime_08$Crime.type)
+levels(CoL_area$name)
 
 osm_base<- read_osm(Points_Crime_08, type="esri", zoom=NULL)
 qtm(osm_base)+
-# tmap_mode("view")+
-  tm_shape (COL_buldings)+
-  tm_polygons("type")+
+tmap_mode("view")+
+  tm_shape (CoL_area)+
+  tm_polygons("code",
+              alpha = 0)+
   tm_shape(Points_Crime_08)+
-  tm_dots("Crime.type",
+  tm_dots("Harm.Index",
           alpha=0.6,
+          border.alpha=0,
           shape = 5,
           style="jenks",
-          palette="YlOrBr",
+          palette="YlOrRd",
           midpoint=NA,
-          title = "Crime harm index\n - City of London")
+          title = "Crime harm index")
 
-##transforming into sf
+
+```
+
+
+
+##transforming into sf for ggplot
+```{r}
 Points_Crime_08_sf<-st_as_sf(Points_Crime_08)
 COL_buldings_sf<-st_as_sf(COL_buldings)
 
 ggplot()+
-  geom_sf(data=COL_buldings_sf, fill="brown", color="brown")+
-  geom_sf(data=Points_Crime_08_sf,shape=10, color="red",
-          show.legend = "line", size=1)+
+  geom_sf(data=COL_buldings_sf, color="brown")+
+  geom_sf(data=Points_Crime_08_sf,
+          shape=20, 
+          style="jenks",
+          palette="YlOrRd",
+          show.legend = "line", 
+          size=1)+
   ggtitle("Coloring street-crime")+
   coord_sf()
 
-
-
-
 ```
 
 
-##Rasterizing the two tables
-
-```{r}
-
-pts <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv")
-coordinates(pts) <- ~Longitude+Latitude
-rast <- raster(ncol=10, nrow=10)
-extent(rast) <- extent(pts)
-rasterize(pts, rast,fun = mean)
-pts
 
 
-```
- 
 
 
 
