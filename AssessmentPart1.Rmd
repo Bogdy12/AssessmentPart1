@@ -4,18 +4,29 @@ output: html_notebook
 ---
 
 
+30th October 2018   Bogdan Rugina
+
+# Geographic Information Systems and Science - Assessment Part 1
+
+
+## Comparing two maps created in QGIS GUI and R language comand line environments
 
 
 
-#Comparing two maps in GUI and code-based environments
+### Introduction
+
+Spatial analysis, more than representing a specific academic field, produces a wide range of techicniques "to understand georeferenced data", from one side and creates applications and software packages as leading and increasing activities between analysts (Manfred, 2004). In this landscape, both the Geographic Information System and Science, one the tool and the knowledge the other, evolved togher with other disciplines to better represent the surface and the near surface of the Earth (Goodchild, 2009).  
+Two different environments make it possible work with geographic data. First to mention are graphical user interface (GUI) open-source (QGIS, SAGA GIS, gvSIG, etc) and commercial products (ESRI, MapInfo, Bentley Systems, just to mention a few) and second comand line interface (CLI) frameworks. 
+This work aims to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in analysing which streets show more crimes in Westminister Borough during August 2018, the second takes into consideration the street-crimes harm index whitin the City of London perimeter. 
 
 
-The idea behind these studies comes to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in a spatial relation between street crimes and the Underground Station locations, the second takes into consideration the street-crimes harm index whitin the City of London perimeter. 
+## Data
 
 For this purpose the “Police.uk” web-site provides a large quantity of data in CSV format with x,y geographic coordinates. Particularly in this case, the London Metropolitan Police service was used to download the csv file which is released monthly, the latest record is August 2018. According to the methodology chose by authors, the file describes “individual crime and anti-social behaviour (ASB) incidents, including street-level location information and subsequent police and court ourcomes associated with crimes”(https://data.police.uk/about/#columns). Along with the Police data, other Open Street Map shapefiles were downloaded from the related Geofabrik website (https://download.geofabrik.de/) as of 1st October 2018 and used as cartographic background for the overall process.
 
 
-##Visualizing The London Metropolitan Police street-crimes data compared to the Underground Stations location as August 2018. 
+
+##Methodology
 
 
 The first map is produced using the QGIS GUI based-approach importing the Metropolitan Police cvs table and transforming it into points shapefile (point_crime.shp). A first visulisation of the new shapefile was created with style>simbology>Heatmap, this compute in QGIS enfasizes the street-crime concetration around the Soho area. 
@@ -24,13 +35,10 @@ The first map is produced using the QGIS GUI based-approach importing the Metrop
 
 
 As a matter of deeper analysis, the focus area for the spatial relation beetween crimes and underground stations is based on the Westminister Borough, which is the most afected in the whole London area. 
-The next step uses the hub line analysis,after dowlonading the MMQGIS plug-in.This procedure has been inspired by the QGIS tutorial at the following web-page: (https://www.qgistutorials.com/en/docs/nearest_neighbor_analysis.html).
+The next step uses the hub line analysis,after downloading the MMQGIS plug-in.This procedure has been inspired by the QGIS tutorial at the following web-page: (https://www.qgistutorials.com/en/docs/nearest_neighbor_analysis.html).
 
-A brand new table has been created through the distance matrix analysis (Vector>Analysis Tools>Distance Matrix).As input parameter has been used the Westminiter crimes record and as target points, the underground stations. The matrix is joined with the Westminster crime records, saved as new file and performed as Hub point layer with MMQGIS>Create>Hub Lines.
-The maps shows the connections that London stations have due their proximity to crime records, according to the Linear(N*k x 3) previously used during the matrix creation. 
-
-
-## Vizualising the street-crime harm index
+A brand new table has been created through the distance matrix analysis (Vector>Analysis Tools>Distance Matrix).As input parameter has been used the Westminiter crimes record and as target points, the underground stations. The matrix is saved as new file and performed as Hub point layer with MMQGIS>Create>Hub Lines.
+The maps shows the connections that London stations have due their proximity to crime records, according to the Linear(N*k x 3) previously used during the matrix creation.
 
 The second map is using ther code-based environment in RStudio and takes into consideration the City of London police street-crime records during August 2018.
 
@@ -118,6 +126,7 @@ crs(CoL_area)
 ```
 
 
+
 ##"Coloring the Crime"
 ```{r}
 
@@ -147,24 +156,15 @@ tmap_mode("view")+
 
 
 
-##transforming into sf for ggplot
-```{r}
-Points_Crime_08_sf<-st_as_sf(Points_Crime_08)
-COL_buldings_sf<-st_as_sf(COL_buldings)
 
-ggplot()+
-  geom_sf(data=COL_buldings_sf, color="brown")+
-  geom_sf(data=Points_Crime_08_sf,
-          shape=20, 
-          style="jenks",
-          palette="YlOrRd",
-          show.legend = "line", 
-          size=1)+
-  ggtitle("Coloring street-crime")+
-  coord_sf()
+##Results
 
-```
 
+## Visualizing which street is more affected by crimes in the Westminister Borough as August 2018. 
+
+
+
+## Vizualising the street-crime harm index
 
 
 
