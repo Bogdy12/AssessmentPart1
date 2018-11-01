@@ -106,9 +106,11 @@ print(Points_Crime_08)
 print(CityofLondon)
 
 levels(Points_Crime_08)
-levels(CityofLondon$name)
+levels(CityofLondon)
+
 
 osm_base<- read_osm(Points_Crime_08, type="esri", zoom=NULL)
+qtm(osm_base)+
   tm_shape (CoL_area)+
   tm_polygons("code",
               alpha = 0)+
@@ -128,19 +130,47 @@ osm_base<- read_osm(Points_Crime_08, type="esri", zoom=NULL)
 
 ```{r}
 
-plot(CoL_area_sp["name"],
+##preparing SHP for ggplotting:
+CityofLondon_df<-fortify(CityofLondon)
+StreetCrimesAug_18_df<-fortify(StreetCrimesAug_18)
+
+
+
+
+plot(CityofLondon["name"],
      axes=TRUE,
      col= "red")
 plot(Points_Crime_08['Crime.type'],
      main="Type of Crime - City of London Police records",
-     add=TRUE)
-
-df<- data.frame(Points_Crime_08)
-plot(df, col="red")
+     axes=TRUE)
 
 
 
+p <- ggplot(StreetCrimesAug_18, aes(x=Longitude, y=Latitude))
+p + geom_point(aes(colour=Harm.Index))
+  
+d
 
+map<- get_map(location=c(0.093337, 51.491376), maptype='roadmap', zoom=11)
+map<-ggmap(map)
+map<- map+
+  geom_path(data=CityofLondon_df, aes(x=long,y=lat, group = group), color = 'darkblue', fill='white', size = 1)+
+  geom_point(alpha=1/2, size=1.5,data=StreetCrimesAug_18, aes(colour=Harm.Index, fill=Harm.Index,x=Longitude, y=Latitude))+
+  theme_minimal()+
+  labs(x=NULL,
+       y=NULL,
+       title="Crime harm index", 
+       subtitle="City of London Police - August 2018")
+map 
+  #scale_x_continuous(limits=c(-0.3, 0.0))
+  #coord_cartesian(xlim = c(-0.3, 0.0),expand = FALSE)
+  
+  
+  
+  
+  
+print(map)
+ggsave("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\map.png", width=25, height=11, dpi=250)
 ```
 
 
@@ -153,10 +183,11 @@ benefits:when converting CRS in shapefiles is more explicit
 drawbacks:
 
 The CLI evironment
-benefits: exporting different s files is very easy after learning some basic code, drawing grapgh from csv file, shapefile is very quick, reading the CRS is very quick in R
+benefits: exporting different s files is very easy after learning some basic code, drawing grapgh from csv file, shapefile is very quick, reading the CRS is very quick in R. wide variety of potting solutions including interactive
 
 drawbacks: neccessary to install and call libraries for more advanced coding,
 when plotting functions are not shown directly, but different plotting service can be provided, getting the map form GoogleMaps requires an billing-activated Google Maps API.
+When a function does'nt work is very difficult to find a solution, due to the fact the are a lot of hidden function, when plotting, if files don't have crs, we must fortify them, takes a long time to reproject the shapefiles
 
 
 
