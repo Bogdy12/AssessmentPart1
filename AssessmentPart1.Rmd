@@ -100,8 +100,6 @@ crs(CityofLondon)
 As an intermediate passage to the final visualization of this map, for all the crime types recorded in the csv file has been added a separate column called "Harm Index" which refers to the measure of harm based on "days in prison that crime will attract" on which Sherman et all (2016) investigated the possibility to associate each crime an index.
 
 ```{r}
-
-
 print(Points_Crime_08)
 print(CityofLondon)
 
@@ -130,47 +128,33 @@ qtm(osm_base)+
 
 ```{r}
 
-##preparing SHP for ggplotting:
-CityofLondon_df<-fortify(CityofLondon)
-StreetCrimesAug_18_df<-fortify(StreetCrimesAug_18)
 
 
-
-
-plot(CityofLondon["name"],
-     axes=TRUE,
-     col= "red")
-plot(Points_Crime_08['Crime.type'],
-     main="Type of Crime - City of London Police records",
-     axes=TRUE)
-
-
-
-
-map<- get_map(location=c(-0.09000, 51.520), maptype="roadmap", zoom=14)
+map<- get_map(location=c(-0.09000, 51.520),
+              maptype="toner-lite",
+              zoom=14)
 map<-ggmap(map)
 map<- map+
-  geom_path(data=CityofLondon_df, 
+  geom_path(data=CityofLondon, 
             aes(x=long,y=lat, 
                 group = group), 
             color = 'darkblue', 
             fill='white', size = 1)+
   geom_point(alpha=1/2,
              data=StreetCrimesAug_18, 
-             aes(colour=Crime.type,
-                 fill=Harm.Index,
+             aes(colour=Harm.Index,
+                 fill=Crime.type,
                  x=Longitude, 
                  y=Latitude, 
-                 size=Harm.Index))+
+                 size=Crime.type))+
   theme_minimal()+
   labs(x=NULL,
        y=NULL,
        title="Crime harm index", 
        subtitle="City of London Police - August 2018")
 map 
-  #scale_x_continuous(limits=c(-0.3, 0.0))
-  #coord_cartesian(xlim = c(-0.3, 0.0),expand = FALSE)
 
+##Print the Png file:
 ggsave("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\map.png", width=25, height=11, dpi=250)
 ```
 
@@ -189,7 +173,8 @@ benefits: exporting different s files is very easy after learning some basic cod
 drawbacks: neccessary to install and call libraries for more advanced coding,
 when plotting functions are not shown directly, but different plotting service can be provided, getting the map form GoogleMaps requires an billing-activated Google Maps API.
 When a function does'nt work is very difficult to find a solution, due to the fact the are a lot of hidden function, when plotting, if files don't have crs, we must fortify them, takes a long time to reproject the shapefiles. very difficult to overlay a web map (ggmap) 
-when is about to edit the final map, in R is a very long way, there is no graphical help to do that
+when is about to edit the final map, in R is a very long way, there is no graphical help to do that. Symbolisation is also very dificul and legend is pretty a mistery
+
 
 
 
@@ -202,5 +187,24 @@ when is about to edit the final map, in R is a very long way, there is no graphi
 
 
 
+```{r}
+## other issues never solved:
+#1.
+plot(CityofLondon["name"],
+     axes=TRUE,
+     col= "red")
+plot(Points_Crime_08['Crime.type'],
+     main="Type of Crime - City of London Police records",
+     axes=TRUE)
+
+#2.
+
+
+
+
+
+
+
+```
 
 
