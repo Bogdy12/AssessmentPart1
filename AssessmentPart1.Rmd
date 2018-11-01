@@ -146,10 +146,6 @@ plot(Points_Crime_08['Crime.type'],
 
 
 
-p <- ggplot(StreetCrimesAug_18, aes(x=Longitude, y=Latitude))
-p + geom_point(aes(colour=Harm.Index))
-  
-d
 
 map<- get_map(location=c(-0.09000, 51.520), maptype="roadmap", zoom=14)
 map<-ggmap(map)
