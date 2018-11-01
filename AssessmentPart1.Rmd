@@ -17,7 +17,7 @@ output: html_notebook
 
 Spatial analysis, more than representing a specific academic field, produces a wide range of techicniques "to understand georeferenced data", from one side and creates applications and software packages as leading and increasing activities between analysts (Manfred, 2004). In this landscape, both the Geographic Information System and Science, one the tool and the knowledge the other, evolved togher with other disciplines to better represent the surface and the near surface of the Earth (Goodchild, 2009).  
 Two different environments make it possible work with geographic data. First to mention are graphical user interface (GUI) open-source (QGIS, SAGA GIS, gvSIG, etc) and commercial products (ESRI, MapInfo, Bentley Systems, just to mention a few) and second comand line interface (CLI) frameworks. 
-This work aims to produce two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in analysing which streets show more crimes in Westminister Borough during August 2018, the second takes into consideration the street-crimes harm index whitin the City of London perimeter. 
+This work aims to produce and compare two maps using the POLICE.UK street-crimes data (https://data.police.uk/). The first spatial representation consists in using QGIS GUI analysing which streets show more crimes in Westminister Borough during August 2018, the second takes into consideration the street-crimes harm index of the same month within the City of London perimeter on R programming CLI environment. 
 
 
 ## Data
@@ -25,28 +25,27 @@ This work aims to produce two maps using the POLICE.UK street-crimes data (https
 For this purpose the “Police.uk” web-site provides a large quantity of data in CSV format with x,y geographic coordinates. Particularly in this case, the London Metropolitan Police service was used to download the csv file which is released monthly, the latest record is August 2018. According to the methodology chose by authors, the file describes “individual crime and anti-social behaviour (ASB) incidents, including street-level location information and subsequent police and court ourcomes associated with crimes”(https://data.police.uk/about/#columns). Along with the Police data, other Open Street Map shapefiles were downloaded from the related Geofabrik website (https://download.geofabrik.de/) as of 1st October 2018 and used as cartographic background for the overall process.
 
 
-
 ##Methodology
 
+The first map is produced using the QGIS GUI based-approach importing the Metropolitan Police cvs table and transforming it into points shapefile. A first visulisation of the new shapefile was created with style>simbology>Heatmap, this compute enfasizes the street-crime concetration around the London Soho area. 
 
-The first map is produced using the QGIS GUI based-approach importing the Metropolitan Police cvs table and transforming it into points shapefile (point_crime.shp). A first visulisation of the new shapefile was created with style>simbology>Heatmap, this compute in QGIS enfasizes the street-crime concetration around the Soho area. 
 
 ![](\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\London_BoroughsOverall2.PNG)
 
 
-As a matter of deeper analysis, the focus area for the spatial relation beetween crimes and underground stations is based on the Westminister Borough, which is the most afected in the whole London area. 
-The next step uses the hub line analysis,after downloading the MMQGIS plug-in.This procedure has been inspired by the QGIS tutorial at the following web-page: (https://www.qgistutorials.com/en/docs/nearest_neighbor_analysis.html).
+As a matter of deeper analysis, the focus area of this study is the Westminister Borough, which is the most afected in the whole London area. 
+The next step consists on importing to the OSM streets shapefile and after buffering a distance of 30 meters from each street with Vector>Analysis Tools>count points in polygon,the buffer polygon is jioned with the streets shape that now contains also the numer of total crimes.
+The map intents to visualize the streets-crime concentration through 5 classes of intensity in "Natural breaks(Jenks)" mode.
 
-A brand new table has been created through the distance matrix analysis (Vector>Analysis Tools>Distance Matrix).As input parameter has been used the Westminiter crimes record and as target points, the underground stations. The matrix is saved as new file and performed as Hub point layer with MMQGIS>Create>Hub Lines.
-The maps shows the connections that London stations have due their proximity to crime records, according to the Linear(N*k x 3) previously used during the matrix creation.
 
-The second map is using ther code-based environment in RStudio and takes into consideration the City of London police street-crime records during August 2018.
+![](\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\Westminister_str_crim_int.PNG)
 
-Inserting the two csv files:
 
+
+The second map utilizes a very similar method as developed for the first map but in this case through the CLI R langugage environment.After installing all the libraries required in RStudio, the first step is to to import the City of London Police csv data and make some appreciations about its content, visualizing a first graph.
+
+Inserting the csv files
 ```{r}
-
-
 library(tidyverse)
 library(sf)
 library(sp)
@@ -65,65 +64,40 @@ library(ggplot2)
 
 SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv", header=TRUE, sep = ",")
 
-
 names(SC08_18)
 
-
 class(SC08_18)
-class(COL_buldings)
 
 
 str(SC08_18)
 plot(SC08_18$Crime.type)
-
-
-
-
 ```
 
 
-##PLace the CRS to the 2 tables:
+The next step involves setting the coordinate refences system to the cvs file which previously has been converted from data frame to spatial frame(sf). With the "st_write" function, the shapefile "Crimes08_18.shp" has been saved and imported as "Points_Crime_08" directly with the "readOGR" code line function from the computer.
+
 
 ```{r}
-##taking the reference from: http://www.spatialreference.org/ref/epsg/32622/
- 
-# convert the dataframes to  objects:
-
+## Specify the CRS to the CVS:
 SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84
 +towgs84=0,0,0")
 
-
+class(SC08_18_sp)
 crs(SC08_18_sp)
 
-```
 
-
-##Convert the csv in points shapefile:
-```{r}
-
-#EXport the obejcts as shapefiles:
-
-
+## Convert the csv in points shapefile:
 st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp", driver="ESRI shapefile")
 
 
-```
- 
- 
- 
-## Import the base shapefile(buildings) and the street-crime points:
- 
-```{r}
-
+## Import the street-crime points:
 Points_Crime_08<-readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp")
 
-
-CoL_area<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CoL_area.shp")
-
 crs(SC08_18_sp)
-crs(CoL_area)
 
 ```
+
+
 
 
 
@@ -157,7 +131,17 @@ tmap_mode("view")+
 
 
 
-##Results
+##Comparing the two work-flows
+
+The GUI environment
+benefits:
+drawbacks:
+
+The CLI evironment
+benefits: exporting different s files is very easy after learning some basic code, drawing grapgh from csv file, shapefile is very quick 
+drawbacks: neccessary to install and call libraries for more advanced coding
+
+
 
 
 ## Visualizing which street is more affected by crimes in the Westminister Borough as August 2018. 
