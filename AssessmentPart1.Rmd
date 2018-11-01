@@ -44,7 +44,6 @@ The map intents to visualize the streets-crime concentration through 5 classes o
 
 The second map utilizes a very similar method as developed for the first map but in this case through the CLI R langugage environment.After installing all the libraries required in RStudio, the first step is to to import the City of London Police csv data and make some appreciations about its content, visualizing a first graph.
 
-Inserting the csv files
 ```{r}
 library(tidyverse)
 library(sf)
@@ -62,20 +61,19 @@ library(rgdal)
 library(geojsonio)
 library(ggplot2)
 
-SC08_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv", header=TRUE, sep = ",")
+StreetCrimesAug_18 <- read.csv("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataInput\\data crime London\\278f379b19290400f4123e740fc18bae2bc00ae4\\2018-08\\2018-08-city-of-london-street.csv", header=TRUE, sep = ",")
 
-names(SC08_18)
+## Inspect the content
+names(StreetCrimesAug_18)
+class(StreetCrimesAug_18)
 
-class(SC08_18)
 
-
-str(SC08_18)
-plot(SC08_18$Crime.type)
+str(StreetCrimesAug_18)
+plot(StreetCrimesAug_18$Crime.type)
 ```
 
 
-The next step involves setting the coordinate refences system to the cvs file which previously has been converted from data frame to spatial frame(sf). With the "st_write" function, the shapefile "Crimes08_18.shp" has been saved and imported as "Points_Crime_08" directly with the "readOGR" code line function from the computer.
-
+The next step involves setting the coordinate refences system to the cvs file that previously has been converted from data frame to spatial frame(sf). With the "st_write" function, the shapefile "Crimes08_18.shp" has been saved and imported as "Points_Crime_08" directly with the "readOGR" code line function from the computer. 
 
 ```{r}
 ## Specify the CRS to the CVS:
@@ -83,35 +81,34 @@ SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= "+proj=
 +towgs84=0,0,0")
 
 class(SC08_18_sp)
-crs(SC08_18_sp)
 
 
 ## Convert the csv in points shapefile:
 st_write(SC08_18_sp,"C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp", driver="ESRI shapefile")
 
 
-## Import the street-crime points:
+## Import the street-crime points and the OSM City of London shapefile::
 Points_Crime_08<-readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\Crimes08_18.shp")
 
-crs(SC08_18_sp)
+CityofLondon<- readOGR("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\CoL_area.shp")
 
+crs(Points_Crime_08)
+crs(CityofLondon)
 ```
 
 
+As an intermediate passage to the final visualization of this map, for all the crime types recorded in the csv file has been added a separate column called "Harm Index" which refers to the measure of harm based on "days in prison that crime will attract" on which Sherman et all (2016) investigated the possibility to associate each crime an index.
 
-
-
-##"Coloring the Crime"
 ```{r}
 
-print(Points_Crime)
-print(CoL_area)
-levels(Points_Crime_08$Crime.type)
-levels(CoL_area$name)
 
-osm_base<- read_osm(Points_Crime_08, upperLeft type="esri", zoom=NULL)
-qtm(osm_base)+
-tmap_mode("view")+
+print(Points_Crime_08)
+print(CityofLondon)
+
+levels(Points_Crime_08)
+levels(CityofLondon$name)
+
+osm_base<- read_osm(Points_Crime_08, type="esri", zoom=NULL)
   tm_shape (CoL_area)+
   tm_polygons("code",
               alpha = 0)+
@@ -129,17 +126,37 @@ tmap_mode("view")+
 ```
 
 
+```{r}
+
+plot(CoL_area_sp["name"],
+     axes=TRUE,
+     col= "red")
+plot(Points_Crime_08['Crime.type'],
+     main="Type of Crime - City of London Police records",
+     add=TRUE)
+
+df<- data.frame(Points_Crime_08)
+plot(df, col="red")
+
+
+
+
+```
+
+
 
 
 ##Comparing the two work-flows
 
 The GUI environment
-benefits:
+benefits:when converting CRS in shapefiles is more explicit
 drawbacks:
 
 The CLI evironment
-benefits: exporting different s files is very easy after learning some basic code, drawing grapgh from csv file, shapefile is very quick 
-drawbacks: neccessary to install and call libraries for more advanced coding
+benefits: exporting different s files is very easy after learning some basic code, drawing grapgh from csv file, shapefile is very quick, reading the CRS is very quick in R
+
+drawbacks: neccessary to install and call libraries for more advanced coding,
+when plotting functions are not shown directly, but different plotting service can be provided, getting the map form GoogleMaps requires an billing-activated Google Maps API.
 
 
 
