@@ -151,11 +151,21 @@ p + geom_point(aes(colour=Harm.Index))
   
 d
 
-map<- get_map(location=c(0.093337, 51.491376), maptype='roadmap', zoom=11)
+map<- get_map(location=c(-0.09000, 51.520), maptype="roadmap", zoom=14)
 map<-ggmap(map)
 map<- map+
-  geom_path(data=CityofLondon_df, aes(x=long,y=lat, group = group), color = 'darkblue', fill='white', size = 1)+
-  geom_point(alpha=1/2, size=1.5,data=StreetCrimesAug_18, aes(colour=Harm.Index, fill=Harm.Index,x=Longitude, y=Latitude))+
+  geom_path(data=CityofLondon_df, 
+            aes(x=long,y=lat, 
+                group = group), 
+            color = 'darkblue', 
+            fill='white', size = 1)+
+  geom_point(alpha=1/2,
+             data=StreetCrimesAug_18, 
+             aes(colour=Crime.type,
+                 fill=Harm.Index,
+                 x=Longitude, 
+                 y=Latitude, 
+                 size=Harm.Index))+
   theme_minimal()+
   labs(x=NULL,
        y=NULL,
@@ -164,12 +174,7 @@ map<- map+
 map 
   #scale_x_continuous(limits=c(-0.3, 0.0))
   #coord_cartesian(xlim = c(-0.3, 0.0),expand = FALSE)
-  
-  
-  
-  
-  
-print(map)
+
 ggsave("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\map.png", width=25, height=11, dpi=250)
 ```
 
@@ -187,7 +192,8 @@ benefits: exporting different s files is very easy after learning some basic cod
 
 drawbacks: neccessary to install and call libraries for more advanced coding,
 when plotting functions are not shown directly, but different plotting service can be provided, getting the map form GoogleMaps requires an billing-activated Google Maps API.
-When a function does'nt work is very difficult to find a solution, due to the fact the are a lot of hidden function, when plotting, if files don't have crs, we must fortify them, takes a long time to reproject the shapefiles
+When a function does'nt work is very difficult to find a solution, due to the fact the are a lot of hidden function, when plotting, if files don't have crs, we must fortify them, takes a long time to reproject the shapefiles. very difficult to overlay a web map (ggmap) 
+when is about to edit the final map, in R is a very long way, there is no graphical help to do that
 
 
 
