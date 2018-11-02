@@ -1,6 +1,10 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_notebook: default
+  html_document:
+    df_print: paged
+  word_document: default
 ---
 
 
@@ -69,7 +73,7 @@ class(StreetCrimesAug_18)
 
 
 str(StreetCrimesAug_18)
-plot(StreetCrimesAug_18$Crime.type)
+plot(StreetCrimesAug_18$Crime.type, col="red")
 ```
 
 
@@ -77,7 +81,7 @@ The next step involves setting the coordinate refences system to the cvs file th
 
 ```{r}
 ## Specify the CRS to the CVS:
-SC08_18_sp <- st_as_sf(SC08_18, coords= c("Longitude", "Latitude"), crs= "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84
+SC08_18_sp <- st_as_sf(StreetCrimesAug_18, coords= c("Longitude", "Latitude"), crs= "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84
 +towgs84=0,0,0")
 
 class(SC08_18_sp)
@@ -109,26 +113,24 @@ levels(CityofLondon)
 
 osm_base<- read_osm(Points_Crime_08, type="esri", zoom=NULL)
 qtm(osm_base)+
-  tm_shape (CoL_area)+
+  tm_shape (CityofLondon)+
   tm_polygons("code",
               alpha = 0)+
   tm_shape(Points_Crime_08)+
   tm_dots("Harm.Index",
-          alpha=0.6,
+          alpha=0.5,
           border.alpha=0,
-          shape = 5,
-          style="jenks",
+          shape =21,
+          col="red",
+          style="quantile",
           palette="YlOrRd",
           midpoint=NA,
-          title = "Crime harm index")
-
-
+          title = "Crime harm index",
+          legend.is.portrait = TRUE)
 ```
 
 
 ```{r}
-
-
 
 map<- get_map(location=c(-0.09000, 51.520),
               maptype="toner-lite",
@@ -147,15 +149,18 @@ map<- map+
                  x=Longitude, 
                  y=Latitude, 
                  size=Crime.type))+
-  theme_minimal()+
-  labs(x=NULL,
-       y=NULL,
+  theme(
+    legend.box.background = element_rect(),
+    legend.box.margin = margin(6,6,6,6)
+  )+
+  labs(x="Longitude",
+       y="Latitude",
        title="Crime harm index", 
        subtitle="City of London Police - August 2018")
 map 
 
 ##Print the Png file:
-ggsave("C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\map.png", width=25, height=11, dpi=250)
+ggsave(file="C:\\Users\\Bogdan\\Documents\\UCL\\MRes\\GIS\\week4\\AssessmentPart1\\DataOutput\\map.pdf",plot=map, device=cairo_pdf, width=210, height=297, units = "mm")
 ```
 
 
@@ -173,7 +178,7 @@ benefits: exporting different s files is very easy after learning some basic cod
 drawbacks: neccessary to install and call libraries for more advanced coding,
 when plotting functions are not shown directly, but different plotting service can be provided, getting the map form GoogleMaps requires an billing-activated Google Maps API.
 When a function does'nt work is very difficult to find a solution, due to the fact the are a lot of hidden function, when plotting, if files don't have crs, we must fortify them, takes a long time to reproject the shapefiles. very difficult to overlay a web map (ggmap) 
-when is about to edit the final map, in R is a very long way, there is no graphical help to do that. Symbolisation is also very dificul and legend is pretty a mistery
+when is about to edit the final map, in R is a very long way, there is no graphical help to do that. Symbolisation is also very dificul and legend is pretty a mistery. Zooming is not very intuitive, and it can be done through fixing the geographic coordinates.
 
 
 
